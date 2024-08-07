@@ -4,9 +4,9 @@ import CustomDropdownMenu from './ui/CustomDropDownMenu';
 const DnsTable: React.FC = () => {
   return (
     <div className="relative overflow-x-auto">
-      <table className="border-2 w-full bg-white rounded-lg">
+      <table className="border-2 w-full bg-white">
         <thead className= "bg-zinc-50">
-          <tr className="[&>*]:px-5 [&>*]:h-8 [&>*]:text-left [&>*]:text-zinc-600 [&>*]:font-semibold">
+          <tr className="[&>*]:px-5 [&>*]:h-8 [&>*]:text-left [&>*]:text-zinc-500 [&>*]:font-semibold">
             <th>Type</th>
             <th>Hostname</th>
             <th>Value</th>
