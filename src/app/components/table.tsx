@@ -1,4 +1,6 @@
-import React from 'react';
+"use client"
+
+import React, { useState } from 'react';
 import CustomDropdownMenu from './ui/CustomDropDownMenu';
 
 export interface DNSRecord{
@@ -10,11 +12,36 @@ export interface DNSRecord{
 
 interface DNSTableProps{
   records: DNSRecord[];
-  onEdit: (record: DNSRecord) => void;
-  onDelete: (record: DNSRecord) => void;
+  onEdit: (index: number, updatedRecord: DNSRecord) => void;
+  onDelete: (index: number) => void;
 }
 
 const DnsTable: React.FC<DNSTableProps> = ({ onEdit, onDelete, records }) => {
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [editRecord, setEditRecord] = useState<DNSRecord | null>(null);
+
+  const handleEditClick = (index: number, record: DNSRecord) => {
+    setEditIndex(index);
+    setEditRecord(record);
+  };
+
+  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    if (editRecord) {
+      setEditRecord({
+        ...editRecord,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
+
+  const handleEditConfirm = () => {
+    if (editRecord !== null && editIndex !== null) {
+      onEdit(editIndex, editRecord);
+      setEditIndex(null);
+      setEditRecord(null);
+    }
+  };
+
   const formatValue = (type: string, value: string) => {
     let label = '';
     let style = 'text-gray-600';
@@ -55,15 +82,73 @@ const DnsTable: React.FC<DNSTableProps> = ({ onEdit, onDelete, records }) => {
         <tbody>
           {records.map((record, index) => (
             <tr key={index}  className="[&>*]:border-b [&>*]:border-t [&>*]:px-5 [&>*]:h-12 [&>*]:text-left">
-              <td>{record.type}</td>
-              <td>{record.hostname}</td>
-              <td>{formatValue(record.type, record.value)}</td>
-              <td>{record.ttl}</td>
+              <td className="text-gray-500">
+                {editIndex === index ? (
+                  <select
+                    name="type"
+                    value={editRecord?.type || ''}
+                    onChange={handleEditChange}
+                    className="border rounded px-2 py-1"
+                  >
+                    <option value="A">A</option>
+                    <option value="NS">NS</option>
+                    <option value="CNAME">CNAME</option>
+                  </select>
+                ) : (
+                  record.type
+                )}
+              </td>
               <td>
-                <CustomDropdownMenu
-                  onEdit={() => onEdit(record)}
-                  onDelete={() => onDelete(record)} 
-                />
+                {editIndex === index ? (
+                  <input
+                    name="name"
+                    value={editRecord?.hostname || ''}
+                    onChange={handleEditChange}
+                    className="border rounded px-2 py-1"
+                  />
+                ) : (
+                  record.hostname
+                )}
+              </td>
+              <td>
+                {editIndex === index ? (
+                  <input
+                    name="content"
+                    value={editRecord?.value || ''}
+                    onChange={handleEditChange}
+                    className="border rounded px-2 py-1"
+                  />
+                ) : (
+                  formatValue(record.type, record.value)
+                )}
+              </td>
+              <td>
+                {editIndex === index ? (
+                  <input
+                    name="ttl"
+                    type="number"
+                    value={editRecord?.ttl || ''}
+                    onChange={handleEditChange}
+                    className="border rounded px-2 py-1"
+                  />
+                ) : (
+                  record.ttl
+                )}
+              </td>
+              <td>
+                {editIndex === index ? (
+                  <button
+                    onClick={handleEditConfirm}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-1 px-2 rounded"
+                  >
+                    Confirm
+                  </button>
+                ) : (
+                  <CustomDropdownMenu
+                    onEdit={() => handleEditClick(index, record)}
+                    onDelete={() => onDelete(index)}
+                  />
+                )}
               </td>
             </tr>
           ))}
