@@ -26,10 +26,11 @@ const DnsTable: React.FC<DNSTableProps> = ({ onEdit, onDelete, records }) => {
   };
 
   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
     if (editRecord) {
       setEditRecord({
         ...editRecord,
-        [e.target.name]: e.target.value,
+        [name]: name === "ttl" ? Number(value) : value,
       });
     }
   };
@@ -101,7 +102,7 @@ const DnsTable: React.FC<DNSTableProps> = ({ onEdit, onDelete, records }) => {
               <td>
                 {editIndex === index ? (
                   <input
-                    name="name"
+                    name="hostname"
                     value={editRecord?.hostname || ''}
                     onChange={handleEditChange}
                     className="border rounded px-2 py-1"
@@ -113,7 +114,7 @@ const DnsTable: React.FC<DNSTableProps> = ({ onEdit, onDelete, records }) => {
               <td>
                 {editIndex === index ? (
                   <input
-                    name="content"
+                    name="value"
                     value={editRecord?.value || ''}
                     onChange={handleEditChange}
                     className="border rounded px-2 py-1"
@@ -141,7 +142,7 @@ const DnsTable: React.FC<DNSTableProps> = ({ onEdit, onDelete, records }) => {
                     onClick={handleEditConfirm}
                     className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-1 px-2 rounded"
                   >
-                    Confirm
+                    Save
                   </button>
                 ) : (
                   <CustomDropdownMenu

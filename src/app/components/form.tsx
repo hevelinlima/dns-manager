@@ -6,7 +6,10 @@ const formSchema = z.object({
   type: z.enum(['A', 'NS', 'CNAME']),
   hostname: z.string().min(1, 'Hostname is required'),
   value: z.string().min(1, 'Value is required'),
-  ttl: z.number().min(1, 'TTL is required') 
+  ttl: z.preprocess(
+    (val) => Number(val),
+    z.number().min(1, 'TTL is required')
+  ), 
 });
 
 type FormValues = z.infer<typeof formSchema>
