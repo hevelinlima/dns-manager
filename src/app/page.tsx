@@ -5,7 +5,11 @@ import DnsForm from "./components/form";
 import { useState } from "react";
 
 export default function Home() {
-  const [records, setRecords] = useState<DNSRecord[]>([]);
+  const [records, setRecords] = useState<DNSRecord[]>([
+    { type: 'CNAME', hostname: 'webmail.com.br', value: 'mail1.cloudserver', ttl: 43200 },
+    { type: 'A', hostname: 'emails.jest.com', value: 'cloudserver2.com', ttl: 3600 },
+    { type: 'NS', hostname: 'dmarc.corp.br', value: 'ns.cloudserver.com', ttl: 1800 },
+  ]);
 
   const addRecord = (newRecord: DNSRecord) => {
     setRecords([...records, newRecord]);

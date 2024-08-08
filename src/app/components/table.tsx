@@ -16,15 +16,28 @@ interface DNSTableProps{
 
 const DnsTable: React.FC<DNSTableProps> = ({ onEdit, onDelete, records }) => {
   const formatValue = (type: string, value: string) => {
+    let label = '';
+    let style = 'text-gray-600';
+
     switch (type){
       case 'A':
       case 'NS':
-        return `returns to ${value}`;
+        label = `returns to `;
+        style = 'text-gray-500';
+        break
       case 'CNAME':
-        return `is an alias to ${value}`;
+        label = `is an alias to `;
+        style = 'text-gray-500';
+        break
       default:
         return value;
     }
+    return (
+      <span>
+        <span className={style}>{label}</span>
+        <span className="text-gray-900 font-medium">{value}</span>
+      </span>
+    );
   };
 
   return (
